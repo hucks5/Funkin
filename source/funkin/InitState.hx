@@ -37,6 +37,7 @@ import funkin.util.macro.MacroUtil;
 import funkin.util.TrackerUtil;
 import funkin.util.WindowUtil;
 import openfl.display.BitmapData;
+import funkin.ui.debug.ChartPlaytestState;
 #if FEATURE_DISCORD_RPC
 import funkin.api.discord.DiscordClient;
 #end
@@ -267,7 +268,7 @@ class InitState extends FlxState
     // Move it to use a BaseRegistry.
     CharacterDataParser.loadCharacterCache();
 
-    NoteKindManager.loadScripts();
+    NoteKindManager.initialize();
 
     ModuleHandler.buildModuleCallbacks();
     ModuleHandler.loadModuleCache();
@@ -386,11 +387,26 @@ class InitState extends FlxState
           fnfsTargetPath: params.stage.stagePath,
         }));
     }
+    #if sys
+    else if (params.song.shouldLoadSong && params.song.songPath != null)
+    {
+      FlxG.switchState(() -> new ChartPlaytestState(
+        {
+          fnfcFilePath: params.song.songPath,
+        }));
+    }
     else
     {
       // FlxG.sound.cache(Paths.music('freakyMenu/freakyMenu'));
       FlxG.switchState(() -> new TitleState());
     }
+    #else
+    else
+    {
+      // FlxG.sound.cache(Paths.music('freakyMenu/freakyMenu'));
+      FlxG.switchState(() -> new TitleState());
+    }
+    #end
   }
 
   /**

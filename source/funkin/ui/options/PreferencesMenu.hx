@@ -145,19 +145,21 @@ class PreferencesMenu extends Page<OptionsState.OptionsMenuPageName>
     createPrefItemCheckbox('Camera Zooms', 'If disabled, camera stops bouncing to the song.', function(value:Bool):Void {
       Preferences.zoomCamera = value;
     }, Preferences.zoomCamera);
+    #if FEATURE_VIDEO_SUBTITLES
+    createPrefItemCheckbox('Video Subtitles', 'If enabled, subtitles will be shown on video cutscenes.', function(value:Bool):Void {
+      Preferences.videoSubtitles = value;
+    }, Preferences.videoSubtitles);
+    #end
     #if !mobile
+    // note: technically we can do DebugDisplayMode.Advanced => DebugDisplayMode.Advanced, etc. here, but that's a bit headache inducing.
     createPrefItemEnum('Debug Display', 'If enabled, FPS and other debug stats will be displayed.', [
-      "Advanced" => DebugDisplayMode.ADVANCED,
-      "Simple" => DebugDisplayMode.SIMPLE,
-      "Off" => DebugDisplayMode.OFF
-    ], function(key:String, value:DebugDisplayMode):Void {
+      "Advanced" => DebugDisplayMode.Advanced,
+      "Simple" => DebugDisplayMode.Simple,
+      "Off" => DebugDisplayMode.Off
+    ], (key:String, value:DebugDisplayMode) -> {
       Preferences.debugDisplay = value;
-    }, switch (Preferences.debugDisplay)
-      {
-        case DebugDisplayMode.SIMPLE: "Simple";
-        case DebugDisplayMode.ADVANCED: "Advanced";
-        default: "Off";
-      });
+    }, Preferences.debugDisplay);
+
     createPrefItemPercentage('Debug Display BG', "Change debug display's background opacity", function(value:Int):Void {
       Preferences.debugDisplayBGOpacity = value;
     }, Preferences.debugDisplayBGOpacity);
